@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>📜 Le programme</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+  <main>
+    <section class="card wide">
+      <p class="kicker">Soirée spéciale</p>
+
+      <h1>Le <span class="accent">programme</span> ✨</h1>
+
+      <p class="subtitle">
+        Avant de te le montrer… je veux juste te dire un truc :
+        ce programme, c’est surtout un prétexte pour passer du temps avec toi.
+      </p>
+
+      <div class="reveal-box">
+        <div class="reveal-head center">
+          <p class="reveal-title">Prête à le découvrir ?</p>
+          <button class="btn primary" id="toggleProgramme" type="button">
+            Afficher le programme 💝
+          </button>
+        </div>
+
+        <div class="reveal-body" id="programmeSection" data-collapsed="true">
+          <div class="pdf-wrap">
+            <img src="./assets/programme.png" alt="">
+
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep" />
+
+      <h2>Alors… est-ce que ça te plaît et ça te donne envie ? 😏</h2>
+
+      <div class="btn-row center">
+        <a class="btn primary" href="./final.html" data-nav>OUI, j’adore 😍</a>
+
+        <!-- ✅ Bouton qui fuit (NE PAS mettre disabled) -->
+        <button
+          class="btn ghost is-disabled"
+          type="button"
+          data-disabled="true"
+          data-runaway="true"
+        >
+          Non😌
+        </button>
+      </div>
+
+      <div class="navline center">
+        <a class="link" href="./soiree.html" data-nav>← Retour</a>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+  <script src="./js/app.js"></script>
+</body>
+</html>
