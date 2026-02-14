@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🍽️ Menu de la soirée</title>
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .menu-wrap{
+      width: 100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 14px;
+    }
+    .menu-img{
+      width: min(560px, 92vw);
+      max-height: 78vh;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      cursor: zoom-in;
+      user-select:none;
+    }
+    .menu-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:100%;
+    }
+
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 20000;
+    }
+    .lightbox.is-open{ display:flex; }
+
+    .lightbox-inner{
+      max-width: min(980px, 96vw);
+      max-height: 92vh;
+      width: 100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 10px;
+    }
+    .lightbox-img{
+      width: 100%;
+      max-height: 86vh;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 18px 80px rgba(0,0,0,.55);
+      cursor: zoom-out;
+      background: rgba(255,255,255,.06);
+    }
+    .lightbox-hint{
+      color: rgba(255,255,255,.85);
+      font-weight: 800;
+      text-align:center;
+      font-size: .95rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="card wide">
+      <div style="width:100%;display:flex;justify-content:flex-start;margin-bottom:10px;">
+        <a class="link" href="./soiree.html" data-nav>← Retour</a>
+      </div>
+
+      <p class="kicker">Dîner des amoureux</p>
+      <h1>🍽️ Le <span class="accent">menu</span> de la soirée</h1>
+      <p class="subtitle">Comme au resto… mais en mieux : parce que c’est avec toi. 💞</p>
+
+      <div class="menu-wrap">
+        <img
+          class="menu-img"
+          src="./assets/menu.png"
+          alt="Menu de la Saint-Valentin"
+          id="menuImage"
+          draggable="false"
+        />
+
+        <div class="menu-actions">
+          <a class="btn ghost" href="./assets/menu.png" target="_blank" rel="noreferrer">Ouvrir en grand ✨</a>
+          <a class="btn primary" href="./programme.html" data-nav>Aller au programme 📜</a>
+        </div>
+
+        <p class="tiny">Astuce : clique sur l’image pour zoomer.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-inner">
+      <img class="lightbox-img" id="lightboxImg" alt="Menu (zoom)" />
+      <div class="lightbox-hint">Clique pour fermer • Échap pour fermer</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+  <script src="./js/app.js"></script>
+
+  <script>
+    const menuImage = document.getElementById("menuImage");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+
+    function openLightbox() {
+      lightboxImg.src = menuImage.src;
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+    }
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      lightboxImg.src = "";
+    }
+
+    menuImage.addEventListener("click", openLightbox);
+    lightbox.addEventListener("click", closeLightbox);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+  </script>
+</body>
+</html>
