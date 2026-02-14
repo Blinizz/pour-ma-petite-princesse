@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🧠 Mini-quiz “Nous deux”</title>
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .quiz{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      margin-top: 10px;
+    }
+    .panel{
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      padding: 16px 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.30);
+      overflow:hidden;
+      position:relative;
+    }
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:-35%;
+      background:
+        radial-gradient(260px 200px at 25% 25%, rgba(255,61,127,.18), transparent 62%),
+        radial-gradient(260px 200px at 75% 75%, rgba(176,29,255,.16), transparent 66%);
+      filter: blur(12px);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .row{ position:relative; z-index:1; }
+
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color: rgba(247,241,255,.70);
+      font-weight: 900;
+      font-size: .92rem;
+      margin-bottom: 10px;
+    }
+
+    .bar{
+      width:100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+    .bar > div{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,61,127,.95), rgba(176,29,255,.90));
+      transition: width .35s ease;
+    }
+
+    .question{
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: rgba(247,241,255,.92);
+      font-weight: 1000;
+      margin: 12px 0 0 0;
+    }
+
+    .feedback{
+      margin: 10px 0 0 0;
+      color: rgba(247,241,255,.78);
+      font-weight: 900;
+      line-height: 1.55;
+      min-height: 1.6em;
+    }
+    .feedback.good{ color: rgba(160, 255, 210, .95); }
+    .feedback.bad{ color: rgba(255, 160, 182, .95); }
+
+    .choices{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .choice{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(247,241,255,.92);
+      font-weight: 900;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .choice:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); }
+    .choice:active{ transform: translateY(1px) scale(.99); }
+
+    /* ✅ feedback visuel plus clair */
+    .choice.good{
+      border-color: rgba(97, 255, 179, .55);
+      background: rgba(97, 255, 179, .10);
+    }
+    .choice.bad{
+      border-color: rgba(255, 90, 124, .65);
+      background: rgba(255, 90, 124, .10);
+    }
+
+    .pill{
+      padding: 6px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(247,241,255,.78);
+      font-weight: 1000;
+      font-size: .85rem;
+      white-space:nowrap;
+      min-width: 76px;
+      text-align:center;
+    }
+    .pill.good{
+      background: rgba(97,255,179,.14);
+      border-color: rgba(97,255,179,.30);
+      color: rgba(210,255,235,.95);
+    }
+    .pill.bad{
+      background: rgba(255,90,124,.14);
+      border-color: rgba(255,90,124,.30);
+      color: rgba(255,220,230,.95);
+    }
+
+    .resultTitle{
+      font-size: 1.1rem;
+      font-weight: 1100;
+      color: rgba(247,241,255,.96);
+      margin: 0 0 8px 0;
+    }
+    .resultText{
+      margin: 0;
+      color: rgba(247,241,255,.78);
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .pop{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index: 40000;
+    }
+    .pop i{
+      position:absolute;
+      left: var(--x);
+      top: var(--y);
+      font-style: normal;
+      opacity: .95;
+      transform: translate(-50%,-50%) scale(.9);
+      animation: pop 760ms ease-out forwards;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+    }
+    @keyframes pop{
+      0%{ transform: translate(-50%,-50%) scale(.55); opacity:0; }
+      18%{ opacity:1; }
+      100%{ transform: translate(calc(-50% + var(--dx)), calc(-140px + var(--dy))) scale(1.25); opacity:0; }
+    }
+
+    .shakeWrong{
+      animation: wrongShake 260ms ease;
+    }
+    @keyframes wrongShake{
+      0%{ transform: translateX(0); }
+      30%{ transform: translateX(-6px); }
+      60%{ transform: translateX(6px); }
+      100%{ transform: translateX(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="card wide">
+      <div style="width:100%;display:flex;justify-content:flex-start;margin-bottom:10px;">
+        <a class="link" href="./activites.html" data-nav>← Retour</a>
+      </div>
+
+      <p class="kicker">Test très sérieux (pas du tout)</p>
+      <h1>🧠 Mini-quiz <span class="accent">“Nous deux”</span></h1>
+      <p class="subtitle">
+        Bébé… petit quiz pour prouver une vérité : toi + moi = 💘
+      </p>
+
+      <div class="quiz">
+        <div class="panel" id="panel">
+          <div class="row">
+            <div class="meta">
+              <span id="stepLabel">Question 1/??</span>
+              <span class="pill" id="scoreLabel">Score : 0</span>
+            </div>
+            <div class="bar"><div id="bar"></div></div>
+
+            <p class="question" id="questionText">...</p>
+            <p class="feedback" id="feedback"></p>
+
+            <div class="choices" id="choices"></div>
+          </div>
+        </div>
+
+        <div class="panel" id="result" style="display:none;">
+          <div class="row">
+            <p class="resultTitle" id="resultTitle"></p>
+            <p class="resultText" id="resultText"></p>
+
+            <div class="btn-row center" style="margin-top:14px;">
+              <button class="btn primary" id="replay" type="button">Rejouer 🔁</button>
+              <a class="btn ghost" href="./soiree.html" data-nav>Retour à la soirée 💘</a>
+            </div>
+
+            <div class="btn-row center" style="margin-top:10px;">
+              <button class="btn ghost" id="copy" type="button">Copier un message 📲</button>
+              <a class="btn ghost" href="./menu.html" data-nav>Voir le menu 🍽️</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="tiny">L’ordre change à chaque fois 😌 (racaillou certified).</p>
+    </section>
+  </main>
+
+  <div class="pop" id="pop"></div>
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+  <script src="./js/app.js"></script>
+
+  <script>
+    // =========================
+    // QUESTIONS (toutes tes infos)
+    // correct = index de la bonne réponse (0..3)
+    // tip = mini phrase mimi/taquine (sans méchanceté)
+    // =========================
+    const ALL = [
+      {
+        q: "Notre resto “marquant”, c’est…",
+        a: ["Delarte", "KFC", "McDo", "Le kebab du coin"],
+        correct: 0,
+        tip: "Celui où bébé prend SES gnocchie 😌"
+      },
+      {
+        q: "Chez Delarte, le plat préféré de bébé c’est :",
+        a: ["Gnocchie alpolo", "Lasagnes", "Pizza 4 fromages", "Salade (mdrr non)"],
+        correct: 0,
+        tip: "Je connais la commande par cœur 💘"
+      },
+      {
+        q: "Et moi, mon classique à Delarte :",
+        a: ["Pâtes carbo", "Bolognaise", "Pesto", "Riz poulet (ça n’existe pas là-bas 😭)"],
+        correct: 0,
+        tip: "Je suis fidèle à la carbo, comme à toi 😌"
+      },
+      {
+        q: "Le mot que je dis tout le temps :",
+        a: ["Racaillou", "Chouchou", "Madame", "Chef"],
+        correct: 0,
+        tip: "Oui… racaillou. Et j’assume 😏"
+      },
+      {
+        q: "Le mot que TU dis et qui me frustre (un peu) :",
+        a: ["dacc", "ok", "wesh", "tkt"],
+        correct: 0,
+        tip: "Le fameux ‘dacc’… j’ai envie de crier 😭💞"
+      },
+      {
+        q: "La chanson que tu m’as mise et qui m’a marqué :",
+        a: ["Ancolie — Djadja & Dinaz", "Jefe — Ninho", "Blinding Lights — The Weeknd", "Anissa — Wejdene"],
+        correct: 0,
+        tip: "Celle-là = souvenir direct 💌"
+      },
+      {
+        q: "Mon animé préféré ET ma série préférée :",
+        a: ["My Hero Academia + Flash", "Naruto + Viking", "One Piece + Casa de Papel", "SNK + Breaking Bad"],
+        correct: 0,
+        tip: "Là c’est cadeau bébé 😌"
+      },
+
+      // ✅ Tes nouvelles questions
+      {
+        q: "Je fais quelle taille ?",
+        a: ["1,83 m", "1,78 m", "1,86 m", "1,80 m"],
+        correct: 0,
+        tip: "Indice : grand racaillou."
+      },
+      {
+        q: "Je ne serai plus jeune permis à partir de :",
+        a: ["1 mars 2026", "1 mars 2025", "24 août 2026", "1 janvier 2026"],
+        correct: 0,
+        tip: "Date à retenir (sinon je te dis ‘dacc’ 😭)"
+      },
+      {
+        q: "Date de notre rencontre :",
+        a: ["24 août", "18 août", "24 juillet", "2 septembre"],
+        correct: 0,
+        tip: "Une date que je garde dans la tête 💘"
+      },
+      {
+        q: "Premier film qu’on a vu au ciné ensemble :",
+        a: ["Dragon le film", "Avatar", "Fast & Furious", "Titanic"],
+        correct: 0,
+        tip: "Celui-là c’est un classique bébé 😌"
+      },
+      {
+        q: "Première boîte de nuit qu’on a faite ensemble :",
+        a: ["Metropolis", "Le Duplex", "Le Red", "Le Loft"],
+        correct: 0,
+        tip: "La toute première… et pas la dernière 😏"
+      },
+      {
+        q: "De quelle année est ma C3 ?",
+        a: ["2015", "2012", "2017", "2014"],
+        correct: 0,
+        tip: "Voilà voilà… elle a vécu 😭"
+      },
+      {
+        q: "La chose que tu préfères chez moi physiquement :",
+        a: ["Mon zigouigoui", "Mes yeux", "Mon sourire", "Mon style"],
+        correct: 0,
+        tip: "Réponse imposée. T’as pas le choix bébé 😭💘"
+      },
+      {
+        q: "Le sport que j’ai le plus fait avec Victor (hors muscu) :",
+        a: ["Tennis", "Foot", "Basket", "Boxe"],
+        correct: 0,
+        tip: "On était des cracks (un peu) 😌"
+      },
+      {
+        q: "La distance qu’on a couru ensemble :",
+        a: ["6,50 km", "5 km", "7 km", "8 km"],
+        correct: 0,
+        tip: "Et après ça… j’avais besoin de câlins 😭"
+      }
+    ];
+
+    // =========================
+    // Shuffle
+    // =========================
+    function shuffle(arr){
+      const a = [...arr];
+      for (let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    // =========================
+    // Engine
+    // =========================
+    const panel = document.getElementById("panel");
+    const result = document.getElementById("result");
+    const questionText = document.getElementById("questionText");
+    const feedback = document.getElementById("feedback");
+    const choices = document.getElementById("choices");
+    const stepLabel = document.getElementById("stepLabel");
+    const scoreLabel = document.getElementById("scoreLabel");
+    const bar = document.getElementById("bar");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultText = document.getElementById("resultText");
+    const replay = document.getElementById("replay");
+    const copy = document.getElementById("copy");
+    const pop = document.getElementById("pop");
+
+    let QUIZ = shuffle(ALL);
+    let i = 0;
+    let score = 0;
+    let locked = false;
+
+    function burst(x, y) {
+      const hearts = ["💖","💘","💗","💞","✨","💜"];
+      for (let k = 0; k < 10; k++) {
+        const el = document.createElement("i");
+        el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        el.style.setProperty("--x", (x + (Math.random()*80-40)) + "px");
+        el.style.setProperty("--y", (y + (Math.random()*40-20)) + "px");
+        el.style.setProperty("--dx", (Math.random()*160-80) + "px");
+        el.style.setProperty("--dy", (Math.random()*80-40) + "px");
+        pop.appendChild(el);
+        setTimeout(() => el.remove(), 820);
+      }
+    }
+
+    function render() {
+      locked = false;
+      const item = QUIZ[i];
+
+      stepLabel.textContent = `Question ${i+1}/${QUIZ.length}`;
+      scoreLabel.textContent = `Score : ${score}`;
+      bar.style.width = `${Math.round((i / QUIZ.length) * 100)}%`;
+
+      questionText.textContent = item.q;
+      feedback.textContent = "";
+      feedback.classList.remove("good","bad");
+
+      choices.innerHTML = "";
+      item.a.forEach((txt, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "choice";
+        btn.innerHTML = `<span>${txt}</span><span class="pill">Choisir</span>`;
+        btn.addEventListener("click", () => pick(idx, btn));
+        choices.appendChild(btn);
+      });
+    }
+
+    function setPill(btn, text, cls){
+      const pill = btn.querySelector(".pill");
+      pill.textContent = text;
+      pill.classList.remove("good","bad");
+      if (cls) pill.classList.add(cls);
+    }
+
+    function pick(idx, btnEl) {
+      if (locked) return;
+      locked = true;
+
+      const item = QUIZ[i];
+      const allBtns = [...choices.querySelectorAll(".choice")];
+
+      // disable all
+      allBtns.forEach(b => b.disabled = true);
+
+      const correctBtn = allBtns[item.correct];
+
+      if (idx === item.correct) {
+        score++;
+        scoreLabel.textContent = `Score : ${score}`;
+
+        btnEl.classList.add("good");
+        setPill(btnEl, "✅ Juste", "good");
+
+        feedback.textContent = `✅ Bien joué bébé. ${item.tip}`;
+        feedback.classList.add("good");
+
+        const r = btnEl.getBoundingClientRect();
+        burst(r.left + r.width/2, r.top + 10);
+      } else {
+        btnEl.classList.add("bad");
+        setPill(btnEl, "❌ Faux", "bad");
+
+        correctBtn.classList.add("good");
+        setPill(correctBtn, "✅ C’était ça", "good");
+
+        // shake panel for wrong
+        const row = panel.querySelector(".row");
+        row.classList.remove("shakeWrong");
+        void row.offsetWidth;
+        row.classList.add("shakeWrong");
+
+        feedback.textContent = `❌ Oups 😌 La bonne réponse était : “${item.a[item.correct]}”. ${item.tip}`;
+        feedback.classList.add("bad");
+      }
+
+      // next after a short delay
+      setTimeout(() => {
+        i++;
+        if (i >= QUIZ.length) finish();
+        else render();
+      }, 1150);
+    }
+
+    function finish() {
+      panel.style.display = "none";
+      result.style.display = "block";
+      bar.style.width = "100%";
+
+      const total = QUIZ.length;
+      const pct = Math.round((score / total) * 100);
+
+      if (pct === 100) {
+        resultTitle.textContent = `BÉBÉ… ${score}/${total}. 😳💘`;
+        resultText.textContent =
+          "Ok tu me connais par cœur… donc ce soir, je te veux collée à moi et très très aimée. 💞";
+      } else if (pct >= 70) {
+        resultTitle.textContent = `Très fort : ${score}/${total} 🥰`;
+        resultText.textContent =
+          "Tu gères bébé. Même si tu dis ‘dacc’… je t’aime quand même 😭💘";
+      } else {
+        resultTitle.textContent = `${score}/${total}… tu fais exprès 😭`;
+        resultText.textContent =
+          "C’est pas grave… je te ré-explique tout, au calme… avec des bisous 😌💗";
+      }
+    }
+
+    replay.addEventListener("click", () => {
+      QUIZ = shuffle(ALL);     // ✅ ordre change à chaque fois
+      i = 0;
+      score = 0;
+      panel.style.display = "block";
+      result.style.display = "none";
+      render();
+    });
+
+    copy.addEventListener("click", async () => {
+      const msg = `Bébé… j’ai fait le mini-quiz 😳💘 Score: ${score}/${QUIZ.length}. (dacc 😭)`;
+      try {
+        await navigator.clipboard.writeText(msg);
+        alert("Message copié ✅");
+      } catch (e) {
+        alert("Impossible de copier automatiquement. Tu peux copier :\n\n" + msg);
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
