@@ -7,184 +7,115 @@
   <link rel="stylesheet" href="./css/style.css" />
 
   <style>
-    .quiz{
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      margin-top: 10px;
-    }
+    .quiz{width:100%;display:flex;flex-direction:column;gap:14px;margin-top:10px}
     .panel{
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 22px;
-      padding: 16px 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.30);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      padding:16px;
+      backdrop-filter:blur(10px);
+      box-shadow:0 18px 60px rgba(0,0,0,.30);
       overflow:hidden;
       position:relative;
     }
     .panel::before{
       content:"";
-      position:absolute;
-      inset:-35%;
+      position:absolute;inset:-35%;
       background:
         radial-gradient(260px 200px at 25% 25%, rgba(255,61,127,.18), transparent 62%),
         radial-gradient(260px 200px at 75% 75%, rgba(176,29,255,.16), transparent 66%);
-      filter: blur(12px);
+      filter:blur(12px);
       opacity:.9;
       pointer-events:none;
     }
-
-    .row{ position:relative; z-index:1; }
+    .row{position:relative;z-index:1}
 
     .meta{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      color: rgba(247,241,255,.70);
-      font-weight: 900;
-      font-size: .92rem;
-      margin-bottom: 10px;
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      color:rgba(247,241,255,.70);
+      font-weight:900;font-size:.92rem;margin-bottom:10px;
     }
 
     .bar{
-      width:100%;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.14);
+      width:100%;height:10px;border-radius:999px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
       overflow:hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
     }
     .bar > div{
-      width:0%;
-      height:100%;
-      border-radius:999px;
-      background: linear-gradient(90deg, rgba(255,61,127,.95), rgba(176,29,255,.90));
-      transition: width .35s ease;
+      width:0%;height:100%;border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,61,127,.95), rgba(176,29,255,.90));
+      transition:width .35s ease;
     }
 
     .question{
-      font-size: 1.05rem;
-      line-height: 1.55;
-      color: rgba(247,241,255,.92);
-      font-weight: 1000;
-      margin: 12px 0 0 0;
+      font-size:1.05rem;line-height:1.55;
+      color:rgba(247,241,255,.92);
+      font-weight:1000;margin:12px 0 0 0;
     }
 
     .feedback{
-      margin: 10px 0 0 0;
-      color: rgba(247,241,255,.78);
-      font-weight: 900;
-      line-height: 1.55;
-      min-height: 1.6em;
+      margin:10px 0 0 0;
+      color:rgba(247,241,255,.78);
+      font-weight:900;line-height:1.55;
+      min-height:1.6em;
     }
-    .feedback.good{ color: rgba(160, 255, 210, .95); }
-    .feedback.bad{ color: rgba(255, 160, 182, .95); }
+    .feedback.good{color:rgba(160,255,210,.95)}
+    .feedback.bad{color:rgba(255,160,182,.95)}
 
-    .choices{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
+    .choices{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
     .choice{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
       width:100%;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(247,241,255,.92);
-      font-weight: 900;
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      padding:12px 14px;border-radius:18px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(247,241,255,.92);
+      font-weight:900;cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
       user-select:none;
     }
-    .choice:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); }
-    .choice:active{ transform: translateY(1px) scale(.99); }
+    .choice:hover{transform:translateY(-1px);background:rgba(255,255,255,.08)}
+    .choice:active{transform:translateY(1px) scale(.99)}
 
-    /* ✅ feedback visuel plus clair */
-    .choice.good{
-      border-color: rgba(97, 255, 179, .55);
-      background: rgba(97, 255, 179, .10);
-    }
-    .choice.bad{
-      border-color: rgba(255, 90, 124, .65);
-      background: rgba(255, 90, 124, .10);
-    }
+    .choice.good{border-color:rgba(97,255,179,.55);background:rgba(97,255,179,.10)}
+    .choice.bad{border-color:rgba(255,90,124,.65);background:rgba(255,90,124,.10)}
 
     .pill{
-      padding: 6px 10px;
-      border-radius:999px;
-      background: rgba(0,0,0,.25);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(247,241,255,.78);
-      font-weight: 1000;
-      font-size: .85rem;
-      white-space:nowrap;
-      min-width: 76px;
-      text-align:center;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(247,241,255,.78);
+      font-weight:1000;font-size:.85rem;
+      white-space:nowrap;min-width:76px;text-align:center;
     }
-    .pill.good{
-      background: rgba(97,255,179,.14);
-      border-color: rgba(97,255,179,.30);
-      color: rgba(210,255,235,.95);
-    }
-    .pill.bad{
-      background: rgba(255,90,124,.14);
-      border-color: rgba(255,90,124,.30);
-      color: rgba(255,220,230,.95);
-    }
+    .pill.good{background:rgba(97,255,179,.14);border-color:rgba(97,255,179,.30);color:rgba(210,255,235,.95)}
+    .pill.bad{background:rgba(255,90,124,.14);border-color:rgba(255,90,124,.30);color:rgba(255,220,230,.95)}
 
-    .resultTitle{
-      font-size: 1.1rem;
-      font-weight: 1100;
-      color: rgba(247,241,255,.96);
-      margin: 0 0 8px 0;
-    }
-    .resultText{
-      margin: 0;
-      color: rgba(247,241,255,.78);
-      font-weight: 900;
-      line-height: 1.6;
-    }
+    .resultTitle{font-size:1.1rem;font-weight:1100;color:rgba(247,241,255,.96);margin:0 0 8px 0}
+    .resultText{margin:0;color:rgba(247,241,255,.78);font-weight:900;line-height:1.6}
 
-    .pop{
-      position: fixed;
-      inset: 0;
-      pointer-events:none;
-      z-index: 40000;
-    }
+    .pop{position:fixed;inset:0;pointer-events:none;z-index:40000}
     .pop i{
-      position:absolute;
-      left: var(--x);
-      top: var(--y);
-      font-style: normal;
-      opacity: .95;
-      transform: translate(-50%,-50%) scale(.9);
-      animation: pop 760ms ease-out forwards;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+      position:absolute;left:var(--x);top:var(--y);
+      font-style:normal;opacity:.95;
+      transform:translate(-50%,-50%) scale(.9);
+      animation:pop 760ms ease-out forwards;
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));
     }
     @keyframes pop{
-      0%{ transform: translate(-50%,-50%) scale(.55); opacity:0; }
-      18%{ opacity:1; }
-      100%{ transform: translate(calc(-50% + var(--dx)), calc(-140px + var(--dy))) scale(1.25); opacity:0; }
+      0%{transform:translate(-50%,-50%) scale(.55);opacity:0}
+      18%{opacity:1}
+      100%{transform:translate(calc(-50% + var(--dx)), calc(-140px + var(--dy))) scale(1.25);opacity:0}
     }
 
-    .shakeWrong{
-      animation: wrongShake 260ms ease;
-    }
+    .shakeWrong{animation:wrongShake 260ms ease}
     @keyframes wrongShake{
-      0%{ transform: translateX(0); }
-      30%{ transform: translateX(-6px); }
-      60%{ transform: translateX(6px); }
-      100%{ transform: translateX(0); }
+      0%{transform:translateX(0)}
+      30%{transform:translateX(-6px)}
+      60%{transform:translateX(6px)}
+      100%{transform:translateX(0)}
     }
   </style>
 </head>
@@ -198,9 +129,7 @@
 
       <p class="kicker">Test très sérieux (pas du tout)</p>
       <h1>🧠 Mini-quiz <span class="accent">“Nous deux”</span></h1>
-      <p class="subtitle">
-        Bébé… petit quiz pour prouver une vérité : toi + moi = 💘
-      </p>
+      <p class="subtitle">Bébé… petit quiz pour prouver une vérité : toi + moi = 💘</p>
 
       <div class="quiz">
         <div class="panel" id="panel">
@@ -236,7 +165,7 @@
         </div>
       </div>
 
-      <p class="tiny">L’ordre change à chaque fois 😌 (racaillou certified).</p>
+      <p class="tiny">✅ Les questions ET les réponses sont mélangées à chaque partie 😌</p>
     </section>
   </main>
 
@@ -246,113 +175,98 @@
 
   <script>
     // =========================
-    // QUESTIONS (toutes tes infos)
-    // correct = index de la bonne réponse (0..3)
-    // tip = mini phrase mimi/taquine (sans méchanceté)
+    // Données
+    // (correct = index de la bonne réponse AVANT mélange; les réponses sont mélangées ensuite)
     // =========================
     const ALL = [
-      {
-        q: "Notre resto “marquant”, c’est…",
-        a: ["Delarte", "KFC", "McDo", "Le kebab du coin"],
-        correct: 0,
-        tip: "Celui où bébé prend SES gnocchie 😌"
-      },
-      {
-        q: "Chez Delarte, le plat préféré de bébé c’est :",
-        a: ["Gnocchie alpolo", "Lasagnes", "Pizza 4 fromages", "Salade (mdrr non)"],
-        correct: 0,
-        tip: "Je connais la commande par cœur 💘"
-      },
-      {
-        q: "Et moi, mon classique à Delarte :",
-        a: ["Pâtes carbo", "Bolognaise", "Pesto", "Riz poulet (ça n’existe pas là-bas 😭)"],
-        correct: 0,
-        tip: "Je suis fidèle à la carbo, comme à toi 😌"
-      },
-      {
-        q: "Le mot que je dis tout le temps :",
-        a: ["Racaillou", "Chouchou", "Madame", "Chef"],
-        correct: 0,
-        tip: "Oui… racaillou. Et j’assume 😏"
-      },
-      {
-        q: "Le mot que TU dis et qui me frustre (un peu) :",
-        a: ["dacc", "ok", "wesh", "tkt"],
-        correct: 0,
-        tip: "Le fameux ‘dacc’… j’ai envie de crier 😭💞"
-      },
-      {
-        q: "La chanson que tu m’as mise et qui m’a marqué :",
-        a: ["Ancolie — Djadja & Dinaz", "Jefe — Ninho", "Blinding Lights — The Weeknd", "Anissa — Wejdene"],
-        correct: 0,
-        tip: "Celle-là = souvenir direct 💌"
-      },
-      {
-        q: "Mon animé préféré ET ma série préférée :",
-        a: ["My Hero Academia + Flash", "Naruto + Viking", "One Piece + Casa de Papel", "SNK + Breaking Bad"],
-        correct: 0,
-        tip: "Là c’est cadeau bébé 😌"
-      },
+      { q:"Notre resto “marquant”, c’est…",
+        a:["Delarte","KFC","McDo","Le kebab du coin"], correct:0,
+        tip:"Celui où bébé prend SES gnocchie 😌" },
 
-      // ✅ Tes nouvelles questions
-      {
-        q: "Je fais quelle taille ?",
-        a: ["1,83 m", "1,78 m", "1,86 m", "1,80 m"],
-        correct: 0,
-        tip: "Indice : grand racaillou."
-      },
-      {
-        q: "Je ne serai plus jeune permis à partir de :",
-        a: ["1 mars 2026", "1 mars 2025", "24 août 2026", "1 janvier 2026"],
-        correct: 0,
-        tip: "Date à retenir (sinon je te dis ‘dacc’ 😭)"
-      },
-      {
-        q: "Date de notre rencontre :",
-        a: ["24 août", "18 août", "24 juillet", "2 septembre"],
-        correct: 0,
-        tip: "Une date que je garde dans la tête 💘"
-      },
-      {
-        q: "Premier film qu’on a vu au ciné ensemble :",
-        a: ["Dragon le film", "Avatar", "Fast & Furious", "Titanic"],
-        correct: 0,
-        tip: "Celui-là c’est un classique bébé 😌"
-      },
-      {
-        q: "Première boîte de nuit qu’on a faite ensemble :",
-        a: ["Metropolis", "Le Duplex", "Le Red", "Le Loft"],
-        correct: 0,
-        tip: "La toute première… et pas la dernière 😏"
-      },
-      {
-        q: "De quelle année est ma C3 ?",
-        a: ["2015", "2012", "2017", "2014"],
-        correct: 0,
-        tip: "Voilà voilà… elle a vécu 😭"
-      },
-      {
-        q: "La chose que tu préfères chez moi physiquement :",
-        a: ["Mon zigouigoui", "Mes yeux", "Mon sourire", "Mon style"],
-        correct: 0,
-        tip: "Réponse imposée. T’as pas le choix bébé 😭💘"
-      },
-      {
-        q: "Le sport que j’ai le plus fait avec Victor (hors muscu) :",
-        a: ["Tennis", "Foot", "Basket", "Boxe"],
-        correct: 0,
-        tip: "On était des cracks (un peu) 😌"
-      },
-      {
-        q: "La distance qu’on a couru ensemble :",
-        a: ["6,50 km", "5 km", "7 km", "8 km"],
-        correct: 0,
-        tip: "Et après ça… j’avais besoin de câlins 😭"
-      }
+      { q:"Chez Delarte, le plat préféré de bébé c’est :",
+        a:["Gnocchie alpolo","Lasagnes","Pizza 4 fromages","Salade (mdrr non)"], correct:0,
+        tip:"Je connais la commande par cœur 💘" },
+
+      { q:"Et moi, mon classique à Delarte :",
+        a:["Pâtes carbo","Bolognaise","Pesto","Riz poulet (ça n’existe pas là-bas 😭)"], correct:0,
+        tip:"Je suis fidèle à la carbo, comme à toi 😌" },
+
+      { q:"Le mot que je dis tout le temps :",
+        a:["Racaillou","Chouchou","Madame","Chef"], correct:0,
+        tip:"Oui… racaillou. Et j’assume 😏" },
+
+      { q:"Le mot que TU dis et qui me frustre (un peu) :",
+        a:["dacc","ok","wesh","tkt"], correct:0,
+        tip:"Le fameux ‘dacc’… j’ai envie de crier 😭💞" },
+
+      { q:"La chanson que tu m’as mise et qui m’a marqué :",
+        a:["Ancolie — Djadja & Dinaz","Jefe — Ninho","Blinding Lights — The Weeknd","Anissa — Wejdene"], correct:0,
+        tip:"Celle-là = souvenir direct 💌" },
+
+      { q:"Mon animé préféré ET ma série préférée :",
+        a:["My Hero Academia + Flash","Naruto + Viking","One Piece + Casa de Papel","SNK + Breaking Bad"], correct:0,
+        tip:"Là c’est cadeau bébé 😌" },
+
+      { q:"Je fais quelle taille ?",
+        a:["1,83 m","1,78 m","1,86 m","1,80 m"], correct:0,
+        tip:"Indice : grand racaillou." },
+
+      { q:"Je ne serai plus jeune permis à partir de :",
+        a:["1 mars 2026","1 mars 2025","24 août 2026","1 janvier 2026"], correct:0,
+        tip:"Date à retenir 😌" },
+
+      { q:"Date où on a officialisé :",
+        a:["5 novembre","24 août","1 mars","14 février"], correct:0,
+        tip:"Cette date-là… je la garde dans le cœur 😌💘" },
+
+      { q:"Date de notre rencontre :",
+        a:["24 août","18 août","24 juillet","2 septembre"], correct:0,
+        tip:"Une date que je garde dans la tête 💘" },
+
+      { q:"Premier film qu’on a vu au ciné ensemble :",
+        a:["Dragon le film","Avatar","Fast & Furious","Titanic"], correct:0,
+        tip:"Celui-là c’est un classique bébé 😌" },
+
+      { q:"Première boîte de nuit qu’on a faite ensemble :",
+        a:["Metropolis","Le Duplex","Le Red","Le Loft"], correct:0,
+        tip:"La toute première… et pas la dernière 😏" },
+
+      { q:"De quelle année est ma C3 ?",
+        a:["2015","2012","2017","2014"], correct:0,
+        tip:"Voilà voilà… elle a vécu 😭" },
+
+      { q:"La chose que tu préfères chez moi physiquement :",
+        a:["Mon zigouigoui","Mes yeux","Mon sourire","Mon style"], correct:0,
+        tip:"Réponse imposée. T’as pas le choix bébé 😭💘" },
+
+      { q:"Le sport que j’ai le plus fait avec Victor (hors muscu) :",
+        a:["Tennis","Foot","Basket","Boxe"], correct:0,
+        tip:"On était des cracks (un peu) 😌" },
+
+      { q:"La distance qu’on a couru ensemble :",
+        a:["6,50 km","5 km","7 km","8 km"], correct:0,
+        tip:"Et après ça… j’avais besoin de câlins 😭" },
+
+      { q:"Ma couleur préférée :",
+        a:["Jaune","Noir","Bleu","Violet"], correct:0,
+        tip:"Indice : couleur du soleil ☀️" },
+
+      { q:"Ma marque de voiture préférée (abordable) :",
+        a:["BMW","Audi","Mercedes","Peugeot"], correct:0,
+        tip:"Je fais le mec sérieux là 😭" },
+
+      // ✅ NOUVELLES QUESTIONS
+      { q:"Ma marque de voiture deluxe préférée :",
+        a:["McLaren","Ferrari","Lamborghini","Porsche"], correct:0,
+        tip:"Là on parle rêve, bébé 😌🏎️" },
+
+      { q:"L’alcool que tu m’as fait découvrir et que j’ai apprécié :",
+        a:["Vodka black","Jägermeister","Rhum arrangé","Tequila"], correct:0,
+        tip:"Celui-là… tu m’as eu 😭💘" },
     ];
 
     // =========================
-    // Shuffle
+    // Utils
     // =========================
     function shuffle(arr){
       const a = [...arr];
@@ -361,6 +275,19 @@
         [a[i],a[j]] = [a[j],a[i]];
       }
       return a;
+    }
+
+    // Mélange les réponses ET recalcule le bon index
+    function shuffleQuestion(item){
+      const tagged = item.a.map((txt, idx) => ({ txt, isCorrect: idx === item.correct }));
+      const mixed = shuffle(tagged);
+      const newA = mixed.map(x => x.txt);
+      const newCorrect = mixed.findIndex(x => x.isCorrect);
+      return { ...item, a: newA, correct: newCorrect };
+    }
+
+    function buildQuiz(){
+      return shuffle(ALL).map(shuffleQuestion);
     }
 
     // =========================
@@ -380,7 +307,7 @@
     const copy = document.getElementById("copy");
     const pop = document.getElementById("pop");
 
-    let QUIZ = shuffle(ALL);
+    let QUIZ = buildQuiz();
     let i = 0;
     let score = 0;
     let locked = false;
@@ -397,6 +324,13 @@
         pop.appendChild(el);
         setTimeout(() => el.remove(), 820);
       }
+    }
+
+    function setPill(btn, text, cls){
+      const pill = btn.querySelector(".pill");
+      pill.textContent = text;
+      pill.classList.remove("good","bad");
+      if (cls) pill.classList.add(cls);
     }
 
     function render() {
@@ -422,21 +356,12 @@
       });
     }
 
-    function setPill(btn, text, cls){
-      const pill = btn.querySelector(".pill");
-      pill.textContent = text;
-      pill.classList.remove("good","bad");
-      if (cls) pill.classList.add(cls);
-    }
-
     function pick(idx, btnEl) {
       if (locked) return;
       locked = true;
 
       const item = QUIZ[i];
       const allBtns = [...choices.querySelectorAll(".choice")];
-
-      // disable all
       allBtns.forEach(b => b.disabled = true);
 
       const correctBtn = allBtns[item.correct];
@@ -460,7 +385,6 @@
         correctBtn.classList.add("good");
         setPill(correctBtn, "✅ C’était ça", "good");
 
-        // shake panel for wrong
         const row = panel.querySelector(".row");
         row.classList.remove("shakeWrong");
         void row.offsetWidth;
@@ -470,7 +394,6 @@
         feedback.classList.add("bad");
       }
 
-      // next after a short delay
       setTimeout(() => {
         i++;
         if (i >= QUIZ.length) finish();
@@ -502,7 +425,7 @@
     }
 
     replay.addEventListener("click", () => {
-      QUIZ = shuffle(ALL);     // ✅ ordre change à chaque fois
+      QUIZ = buildQuiz();      // remélange questions + réponses
       i = 0;
       score = 0;
       panel.style.display = "block";
