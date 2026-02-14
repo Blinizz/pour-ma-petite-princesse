@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🫙 Bocal à mots doux</title>
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .jar-zone{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      margin-top: 8px;
+    }
+
+    /* ====== JAR (premium glass) ====== */
+    .jar{
+      width: min(380px, 86vw);
+      height: 440px;
+      position: relative;
+      cursor: pointer;
+      user-select:none;
+      filter: drop-shadow(0 34px 110px rgba(0,0,0,.58));
+      transition: transform .16s ease;
+      transform-origin: 50% 90%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .jar:hover{ transform: translateY(-3px); }
+    .jar:active{ transform: translateY(1px) scale(.99); }
+
+    .jar::before{
+      content:"";
+      position:absolute;
+      inset:-18px;
+      border-radius: 52px;
+      background:
+        radial-gradient(220px 150px at 50% 35%, rgba(255,61,127,.28), transparent 62%),
+        radial-gradient(260px 200px at 60% 75%, rgba(176,29,255,.22), transparent 68%),
+        radial-gradient(220px 160px at 30% 80%, rgba(255,255,255,.10), transparent 70%);
+      filter: blur(12px);
+      opacity:.95;
+      pointer-events:none;
+    }
+
+    .lid{
+      position:absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 78%;
+      height: 66px;
+      border-radius: 22px;
+      background:
+        radial-gradient(120px 60px at 30% 30%, rgba(255,255,255,.22), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.08));
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .lid::before{
+      content:"";
+      position:absolute;
+      inset: 10px 16px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,.25);
+      opacity:.75;
+    }
+    .lid::after{
+      content:"";
+      position:absolute;
+      left:-40%;
+      top:-60%;
+      width:70%;
+      height:240%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+      transform: rotate(25deg);
+      opacity:.55;
+      animation: lidShine 3s ease-in-out infinite;
+    }
+    @keyframes lidShine{
+      0%{ transform: translateX(-40%) rotate(25deg); opacity:.18; }
+      50%{ transform: translateX(130%) rotate(25deg); opacity:.65; }
+      100%{ transform: translateX(240%) rotate(25deg); opacity:.16; }
+    }
+
+    .glass{
+      position:absolute;
+      top: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88%;
+      height: 334px;
+      border-radius: 46px;
+      background:
+        radial-gradient(240px 240px at 40% 28%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(240px 260px at 70% 76%, rgba(255,255,255,.10), transparent 64%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.06),
+        inset 0 -24px 70px rgba(176,29,255,.08),
+        inset 0 -18px 44px rgba(255,61,127,.10);
+    }
+
+    .insideGlow{
+      position:absolute;
+      inset:-20%;
+      background:
+        radial-gradient(260px 220px at 50% 38%, rgba(255,61,127,.18), transparent 60%),
+        radial-gradient(260px 220px at 60% 72%, rgba(176,29,255,.16), transparent 62%),
+        radial-gradient(220px 180px at 30% 75%, rgba(255,255,255,.06), transparent 70%);
+      filter: blur(2px);
+      opacity:.9;
+      animation: insidePulse 3.8s ease-in-out infinite;
+    }
+    @keyframes insidePulse{
+      0%,100%{ transform: scale(1); opacity:.85; }
+      50%{ transform: scale(1.04); opacity:1; }
+    }
+
+    .highlight{
+      position:absolute;
+      top: 18px;
+      left: 18%;
+      width: 22px;
+      height: 240px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      transform: rotate(16deg);
+      opacity:.80;
+    }
+    .highlight2{
+      position:absolute;
+      top: 52px;
+      left: 30%;
+      width: 9px;
+      height: 175px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      transform: rotate(16deg);
+      opacity:.85;
+    }
+
+    .base{
+      position:absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72%;
+      height: 24px;
+      border-radius: 999px;
+      background:
+        radial-gradient(90px 24px at 30% 40%, rgba(255,255,255,.16), transparent 70%),
+        rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
+
+    .paper{
+      position:absolute;
+      width: 70px;
+      height: 44px;
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 12px 24px rgba(0,0,0,.22);
+      left: var(--x);
+      top: var(--y);
+      transform: rotate(var(--r));
+      animation: floatPaper var(--t) ease-in-out infinite;
+      backdrop-filter: blur(6px);
+    }
+    .paper::after{
+      content:"";
+      position:absolute;
+      left:12px; right:12px; top:14px;
+      height:2px; border-radius:99px;
+      background: linear-gradient(90deg, rgba(255,61,127,.75), rgba(176,29,255,.60));
+      opacity:.8;
+    }
+    @keyframes floatPaper{
+      0%,100%{ transform: translateY(0) rotate(var(--r)); }
+      50%{ transform: translateY(-10px) rotate(calc(var(--r) + 2deg)); }
+    }
+
+    .fly-paper{
+      position: fixed;
+      width: 76px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.08));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 18px 45px rgba(0,0,0,.30);
+      z-index: 40000;
+      pointer-events:none;
+      transform: translate(-50%,-50%) rotate(6deg);
+    }
+    .fly-paper::after{
+      content:"";
+      position:absolute;
+      left:12px; right:12px; top:16px;
+      height:2px; border-radius:99px;
+      background: linear-gradient(90deg, rgba(255,61,127,.8), rgba(176,29,255,.65));
+      opacity:.9;
+    }
+
+    .note{
+      width: min(660px, 92vw);
+      background:
+        radial-gradient(180px 120px at 20% 0%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(180px 120px at 80% 0%, rgba(255,255,255,.10), transparent 60%),
+        rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: 16px 16px;
+      text-align:center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 22px 70px rgba(0,0,0,.40);
+      transform: translateY(6px);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity .25s ease, transform .25s ease, max-height .35s ease;
+    }
+    .note.show{
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 260px;
+    }
+    .note p{
+      margin:0;
+      font-size: 1.08rem;
+      line-height: 1.6;
+      color: rgba(247,241,255,.94);
+      min-height: 3.2em;
+    }
+    .note .small{
+      margin-top:10px;
+      font-size:.95rem;
+      color: rgba(247,241,255,.72);
+      font-weight: 900;
+    }
+
+    .progress{
+      width: min(520px, 88vw);
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+      margin-top: 10px;
+    }
+    .progress > div{
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,61,127,.95), rgba(176,29,255,.90));
+      transition: width .35s ease;
+    }
+
+    .hint{
+      margin:0;
+      color: rgba(247,241,255,.72);
+      font-weight: 900;
+      text-align:center;
+    }
+
+    .shake{
+      animation: jarShake 220ms ease;
+    }
+    @keyframes jarShake{
+      0%{ transform: translateY(-2px) rotate(0deg); }
+      35%{ transform: translateY(-2px) rotate(-1.6deg); }
+      70%{ transform: translateY(-2px) rotate(1.6deg); }
+      100%{ transform: translateY(-2px) rotate(0deg); }
+    }
+
+    .pop{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index: 30000;
+    }
+    .pop i{
+      position:absolute;
+      left: var(--x);
+      top: var(--y);
+      font-style: normal;
+      opacity: .95;
+      transform: translate(-50%,-50%) scale(.9);
+      animation: pop 760ms ease-out forwards;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+    }
+    @keyframes pop{
+      0%{ transform: translate(-50%,-50%) scale(.55); opacity:0; }
+      18%{ opacity:1; }
+      100%{ transform: translate(calc(-50% + var(--dx)), calc(-140px + var(--dy))) scale(1.25); opacity:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="card wide">
+      <div style="width:100%;display:flex;justify-content:flex-start;margin-bottom:10px;">
+        <a class="link" href="./soiree.html" data-nav>← Retour</a>
+      </div>
+
+      <p class="kicker">Petit bonus</p>
+      <h1>🫙 Le <span class="accent">bocal</span> à mots doux</h1>
+      <p class="subtitle">
+        Clique sur le bocal… et je te laisse un petit mot.
+        (Oui, même <strong>plusieurs</strong>.) 💞
+      </p>
+
+      <div class="jar-zone">
+        <div class="jar" id="jar" aria-label="Bocal à mots doux">
+          <div class="lid"></div>
+
+          <div class="glass" id="glass">
+            <div class="insideGlow"></div>
+            <div class="highlight"></div>
+            <div class="highlight2"></div>
+
+            <div class="paper" style="--x:16%;--y:66%;--r:-10deg;--t:3.2s"></div>
+            <div class="paper" style="--x:44%;--y:78%;--r:8deg;--t:3.7s"></div>
+            <div class="paper" style="--x:66%;--y:60%;--r:-6deg;--t:3.1s"></div>
+            <div class="paper" style="--x:28%;--y:48%;--r:12deg;--t:3.9s"></div>
+            <div class="paper" style="--x:60%;--y:44%;--r:-14deg;--t:3.4s"></div>
+            <div class="paper" style="--x:42%;--y:58%;--r:4deg;--t:3.8s"></div>
+          </div>
+
+          <div class="base"></div>
+        </div>
+
+        <p class="hint">✨ Clique = un mot • Re-clique = un autre</p>
+
+        <div class="note" id="note">
+          <p id="noteText"></p>
+          <div class="small" id="noteCount"></div>
+          <div class="progress" aria-hidden="true"><div id="progBar"></div></div>
+        </div>
+
+        <div class="btn-row center">
+          <a class="btn primary" href="./soiree.html" data-nav>Retour à la soirée 💘</a>
+          <a class="btn ghost" href="./menu.html" data-nav>Voir le menu 🍽️</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="pop" id="pop"></div>
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+  <script src="./js/app.js"></script>
+
+  <script>
+    const jar = document.getElementById("jar");
+    const glass = document.getElementById("glass");
+    const note = document.getElementById("note");
+    const noteText = document.getElementById("noteText");
+    const noteCount = document.getElementById("noteCount");
+    const progBar = document.getElementById("progBar");
+    const pop = document.getElementById("pop");
+
+    let clicks = 0;
+
+    // ✅ Ajout de tes phrases “petit caractère” ici
+    const baseMessages = [
+      "T’es mon endroit préféré. Même quand on n’est nulle part. 💘",
+      "Si je devais te choisir dans toutes les vies… je te choisirais à chaque fois. ✨",
+      "Toi + moi = la meilleure idée que j’ai eue. ❤️",
+      "J’aime ta façon d’être toi. Ça me rend bête heureux. 😌",
+
+      // 😏 ironique (mignon)
+      "Ton petit caractère de chipie… il est terrible. Et pourtant, c’est exactement ça qui me fait fondre. 😌💞",
+      "Madame la petite peste adorable… même quand tu fais la dure, t’es mon point faible. 😏💘",
+      "Quand tu fais ta ‘sale petite mignonne’… je sais pas pourquoi, mais je t’aime encore plus. 🙃💗",
+
+      "Je te promets une soirée où tu te sentiras aimée, désirée, et chouchoutée. 💋",
+      "Ton sourire ? C’est mon bouton ‘recommencer la journée’. ☀️",
+      "Je veux juste te voir rire… et me coller, un peu, beaucoup. 🫶",
+      "Tu es ma paix. Et mon feu. En même temps. 🔥🤍",
+      "J’ai hâte d’être à côté de toi… et de te regarder vivre. 💌"
+    ];
+
+    function shuffle(arr){
+      const a = [...arr];
+      for (let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    let deck = shuffle(baseMessages);
+    let idx = 0;
+
+    function nextMessage(){
+      if (clicks === 5) {
+        return "OK… message spécial : ce soir, je veux te faire sentir comme la reine que tu es. 👑💜";
+      }
+      if (idx >= deck.length){
+        deck = shuffle(baseMessages);
+        idx = 0;
+      }
+      return deck[idx++];
+    }
+
+    function burst(x, y) {
+      const hearts = ["💖","💘","💗","💞","✨","💜"];
+      for (let i = 0; i < 10; i++) {
+        const el = document.createElement("i");
+        el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        el.style.setProperty("--x", (x + (Math.random()*80-40)) + "px");
+        el.style.setProperty("--y", (y + (Math.random()*40-20)) + "px");
+        el.style.setProperty("--dx", (Math.random()*160-80) + "px");
+        el.style.setProperty("--dy", (Math.random()*80-40) + "px");
+        pop.appendChild(el);
+        setTimeout(() => el.remove(), 820);
+      }
+    }
+
+    function flyPaperToNote() {
+      const rJar = glass.getBoundingClientRect();
+      const rNote = note.getBoundingClientRect();
+
+      const startX = rJar.left + rJar.width * 0.55;
+      const startY = rJar.top + rJar.height * 0.55;
+
+      const endX = rNote.left + rNote.width * 0.50;
+      const endY = rNote.top + 26;
+
+      const p = document.createElement("div");
+      p.className = "fly-paper";
+      p.style.left = startX + "px";
+      p.style.top = startY + "px";
+      document.body.appendChild(p);
+
+      const dx = endX - startX;
+      const dy = endY - startY;
+
+      p.animate([
+        { transform: "translate(-50%,-50%) rotate(6deg) scale(.95)", opacity: 0 },
+        { transform: "translate(-50%,-70%) rotate(-10deg) scale(1)", opacity: 1, offset: 0.2 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(2deg) scale(1.05)`, opacity: 0.0 }
+      ], { duration: 520, easing: "cubic-bezier(.2,.8,.2,1)" });
+
+      setTimeout(() => p.remove(), 560);
+    }
+
+    let typingTimer = null;
+    function typeText(el, text) {
+      clearInterval(typingTimer);
+      el.textContent = "";
+      let i = 0;
+      typingTimer = setInterval(() => {
+        el.textContent += text[i++] || "";
+        if (i >= text.length) clearInterval(typingTimer);
+      }, 18);
+    }
+
+    function updateProgress() {
+      const total = 12;
+      const val = Math.min(clicks, total);
+      const pct = Math.round((val / total) * 100);
+      progBar.style.width = pct + "%";
+    }
+
+    jar.addEventListener("click", () => {
+      clicks++;
+
+      jar.classList.remove("shake");
+      void jar.offsetWidth;
+      jar.classList.add("shake");
+
+      flyPaperToNote();
+      const r = jar.getBoundingClientRect();
+      burst(r.left + r.width/2, r.top + 120);
+
+      note.classList.add("show");
+      const msg = nextMessage();
+      typeText(noteText, msg);
+
+      noteCount.textContent = `Petit mot n°${clicks} 💌`;
+      updateProgress();
+
+      if (clicks === 12) {
+        setTimeout(() => {
+          typeText(noteText, "Ton bocal est rempli… comme mon cœur quand je pense à toi. 💞");
+          noteCount.textContent = "Bocal rempli 😳💘";
+          progBar.style.width = "100%";
+        }, 450);
+      }
+    });
+  </script>
+</body>
+</html>
